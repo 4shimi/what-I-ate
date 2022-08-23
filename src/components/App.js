@@ -13,9 +13,31 @@ function App() {
   const [search, setSearch] = useState(``);
 
   const handleNewestClick = () => setOrder("createdAt");
-  const handleCalorieClick = () => setOrder("calorie");
+  //const handleCalorieClick = () => setOrder("calorie");
+  const handleLowCalorieClick = () => setOrder("lowCalorie");
+  const handleHighCalorieClick = () => setOrder("highCalorie");
 
-  const sortedItems = items.sort((a, b) => b[order] - a[order]);
+  const sortedItems = items.sort((a, b) => {
+    // 최신일자순
+    if (order === "createdAt") {
+      if (a.order > b.order) return -1;
+      if (a.order < b.order) return 1;
+      return 0;
+    }
+
+    // 칼로리 정렬
+    // 저칼로리순
+    if (order === "lowCalorie") {
+      if (a.calorie > b.calorie) return 1;
+      if (a.calorie < b.calorie) return -1;
+      return 0;
+    }
+
+    // 고칼로리순
+    if (a.calorie > b.calorie) return 1;
+    if (a.calorie < b.calorie) return -1;
+    return 0;
+  });
 
   const handleDelete = (i) => {
     const nextItems = items.filter((item) => item.id !== i);
@@ -64,7 +86,8 @@ function App() {
         <button type="submit">검색</button>
       </form>
       <button onClick={handleNewestClick}>최신순</button>
-      <button onClick={handleCalorieClick}>칼로리순</button>
+      <button onClick={handleHighCalorieClick}> 고칼로리순</button>
+      <button onClick={handleLowCalorieClick}> 저칼로리순</button>
       <FoodList items={sortedItems} onDelete={handleDelete} />
       {cursor && (
         <button disabled={isLoading} onClick={handleLoadMore}>
